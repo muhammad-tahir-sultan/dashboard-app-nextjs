@@ -92,6 +92,7 @@ src/
 │   ├── Charts/         # Recharts implementations
 │   ├── Dashboard/      # Main View & Summary Grid
 │   ├── Filters/        # Search & Filter bar
+│   ├── Header/         # Dashboard Header & Global Nav
 │   ├── ui/             # Atomic, reusable UI components (Button, Input, etc.)
 │   ├── icons/          # Centralized SVG icon library
 │   ├── Layout/         # Global layout elements
