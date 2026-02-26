@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 import { useAppSelector } from '@/store/hooks';
 import { selectDarkMode } from '@/features/themeSlice';
-import type { ChartDataPoint } from '@/utils/mockApi';
+import { ChartDataPoint } from '@/types';
 
 interface LineChartProps {
     data: ChartDataPoint[];

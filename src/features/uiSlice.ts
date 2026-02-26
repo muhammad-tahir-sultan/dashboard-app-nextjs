@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Filters } from '@/utils/mockApi';
+import { FiltersState } from '@/types';
 
 interface UiState {
-    filters: Filters;
+    filters: FiltersState;
     page: number;
     pageSize: number;
     sortField: string;
@@ -29,7 +29,7 @@ const uiSlice = createSlice({
     name: 'ui',
     initialState,
     reducers: {
-        setFilter(state, action: PayloadAction<Partial<Filters>>) {
+        setFilter(state, action: PayloadAction<Partial<FiltersState>>) {
             state.filters = { ...state.filters, ...action.payload };
             state.page = 1; // reset page when filter changes
         },

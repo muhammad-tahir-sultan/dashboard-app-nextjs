@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector, type PayloadAction } from '@reduxjs/toolkit';
 import { mockFetchData } from '@/utils/mockApi';
-import { DataRecord, ChartDataPoint } from '@/types';
+import { DataRecord, ChartDataPoint, FiltersState } from '@/types';
 import type { RootState } from '@/store/store';
 
 // ── Async thunk ──────────────────────────────────────────────────────
@@ -8,7 +8,7 @@ export const fetchDashboardData = createAsyncThunk(
     'data/fetchDashboardData',
     async () => {
         const data = await mockFetchData();
-        return data;
+        return data as { records: DataRecord[]; chartData: ChartDataPoint[] };
     }
 );
 
@@ -37,7 +37,7 @@ const dataSlice = createSlice({
             state.activeSessions += Math.floor(Math.random() * 20 - 5);
             if (state.activeSessions < 0) state.activeSessions = Math.floor(Math.random() * 100);
         },
-        addRealtimeRecord(state, action) {
+        addRealtimeRecord(state, action: PayloadAction<DataRecord>) {
             state.records.unshift(action.payload);
         },
     },
@@ -65,7 +65,7 @@ export default dataSlice.reducer;
 
 // ── Memoized Selectors (reselect) ────────────────────────────────────
 const selectRecords = (state: RootState): DataRecord[] => state.data?.records || [];
-const selectFilters = (state: RootState) => state.ui?.filters || {
+const selectFilters = (state: RootState): FiltersState => state.ui?.filters || {
     category: '',
     status: '',
     dateFrom: '',
@@ -75,7 +75,7 @@ const selectFilters = (state: RootState) => state.ui?.filters || {
 
 export const selectFilteredRecords = createSelector(
     [selectRecords, selectFilters],
-    (records: DataRecord[], filters) => {
+    (records: DataRecord[], filters: FiltersState) => {
         let filtered = records;
 
         if (!filters) return filtered;
