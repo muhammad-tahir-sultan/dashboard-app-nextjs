@@ -47,7 +47,7 @@ A modern, high-performance analytics dashboard built with **Next.js**, **Redux T
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/muhammad-tahir-sultan/dashboard-app-nextjs.git
    cd dashboard-app
    ```
 
