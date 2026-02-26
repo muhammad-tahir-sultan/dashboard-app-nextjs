@@ -66,6 +66,22 @@ A modern, high-performance analytics dashboard built with **Next.js**, **Redux T
 
 ---
 
+## 🌐 Deployment
+
+### Deploy on Vercel
+
+The easiest way to deploy this project is via [Vercel](https://vercel.com/new).
+
+1.  Push your code to GitHub (already completed).
+2.  Import the repository into Vercel.
+3.  Vercel will automatically detect **Next.js** and configure the build settings.
+4.  Click **Deploy**.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmuhammad-tahir-sultan%2Fdashboard-app-nextjs)
+
+
+---
+
 ## 📁 Project Structure
 
 ```text
