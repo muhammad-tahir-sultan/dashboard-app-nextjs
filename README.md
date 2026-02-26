@@ -86,13 +86,25 @@ The easiest way to deploy this project is via [Vercel](https://vercel.com/new).
 
 ```text
 src/
-├── app/            # Next.js App Router setup
-├── components/     # UI Components (Cards, Charts, Table, Modals)
-├── features/       # Redux slices and logic
-├── hooks/          # Custom React hooks (real-time, etc.)
-├── store/          # Redux Store configuration
-├── utils/          # Formatter and helper functions
-└── types/          # TypeScript definitions
+├── app/                # Next.js App Router setup & Global Styles
+├── components/         # UI Components
+│   ├── Card/           # Metric Summary Cards
+│   ├── Charts/         # Recharts implementations
+│   ├── Dashboard/      # Main View & Summary Grid
+│   ├── Filters/        # Search & Filter bar
+│   ├── ui/             # Atomic, reusable UI components (Button, Input, etc.)
+│   ├── icons/          # Centralized SVG icon library
+│   ├── Layout/         # Global layout elements
+│   ├── Modal/          # Detail view modals
+│   ├── Table/          # Virtualized Data Table
+│   └── Skeleton/       # Loading placeholders
+├── constants/          # Application constants (Statuses, Categories, Colors)
+├── features/           # Redux Slices (Data, UI, Theme)
+├── hooks/              # Custom React hooks (Debounce, Realtime)
+├── store/              # Redux Store & Provider configuration
+├── types/              # Centralized TypeScript definitions
+├── utils/              # Formatters, Mock API & Test Utilities
+└── __tests__/          # (Test files are colocated with components)
 ```
 
 ---
