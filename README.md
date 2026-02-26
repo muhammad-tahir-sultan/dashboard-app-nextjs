@@ -90,7 +90,12 @@ src/
 ├── components/         # UI Components
 │   ├── Card/           # Metric Summary Cards
 │   ├── Charts/         # Recharts implementations
-│   ├── Dashboard/      # Main View & Summary Grid
+│   ├── Dashboard/      # Main View Orchestrator
+│   │   ├── ChartsSection.tsx
+│   │   ├── RecordsSection.tsx
+│   │   ├── SummaryGrid.tsx
+│   │   ├── DashboardBackground.tsx
+│   │   └── ChartCard.tsx
 │   ├── Filters/        # Search & Filter bar
 │   ├── Footer/         # Dashboard Footer
 │   ├── Header/         # Dashboard Header & Global Nav
