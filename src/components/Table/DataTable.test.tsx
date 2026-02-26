@@ -65,7 +65,7 @@ describe('DataTable Component', () => {
             } as any,
         });
 
-        expect(screen.getByText(/NAME/i)).toBeInTheDocument();
+        expect(screen.getByText(/CUSTOMER/i)).toBeInTheDocument();
         expect(screen.getByText(/EMAIL/i)).toBeInTheDocument();
         expect(screen.getByText(/STATUS/i)).toBeInTheDocument();
     });
