@@ -15,7 +15,7 @@ const DarkModeToggle = memo(function DarkModeToggle() {
     return (
         <button
             onClick={handleToggle}
-            className="relative p-2 rounded-xl bg-gray-800/80 border border-gray-700/50 hover:bg-gray-700 transition-colors group"
+            className="relative p-2 rounded-xl bg-gray-100 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group"
             title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
         >
             {darkMode ? (

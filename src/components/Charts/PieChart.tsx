@@ -10,6 +10,7 @@ import {
     Legend,
 } from 'recharts';
 import { useAppSelector } from '@/store/hooks';
+import { selectDarkMode } from '@/features/themeSlice';
 import { selectFilteredRecords } from '@/features/dataSlice';
 
 const COLORS = ['#818cf8', '#34d399', '#f59e0b', '#f87171'];
@@ -17,17 +18,19 @@ const COLORS = ['#818cf8', '#34d399', '#f59e0b', '#f87171'];
 const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload?.length) return null;
     return (
-        <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-xl p-3 shadow-xl">
+        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl p-3 shadow-xl">
             <p className="text-sm font-semibold" style={{ color: payload[0].payload.fill }}>
                 {payload[0].name}
             </p>
-            <p className="text-xs text-gray-300">{payload[0].value} users</p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">{payload[0].value} users</p>
         </div>
     );
 };
 
 const PieChartComponent = memo(function PieChartComponent() {
     const records = useAppSelector(selectFilteredRecords);
+    const darkMode = useAppSelector(selectDarkMode);
+    const labelColor = darkMode ? '#9ca3af' : '#6b7280';
 
     const categoryData = React.useMemo(() => {
         const map: Record<string, number> = {};
@@ -57,8 +60,8 @@ const PieChartComponent = memo(function PieChartComponent() {
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
                     <Legend
-                        wrapperStyle={{ fontSize: 12, color: '#9ca3af' }}
-                        formatter={(value: string) => <span className="text-gray-400">{value}</span>}
+                        wrapperStyle={{ fontSize: 12, color: labelColor }}
+                        formatter={(value: string) => <span className="text-gray-500 dark:text-gray-400">{value}</span>}
                     />
                 </RechartsPieChart>
             </ResponsiveContainer>

@@ -1,39 +1,96 @@
 @import "tailwindcss";
 
-:root {
-  --background: #030712;
-  /* Blue-950 */
-  --foreground: #f9fafb;
-  /* Gray-50 */
-}
+@theme {
+  /* Configure the dark variant to use the .dark class specifically */
+  --variant-dark: .dark &;
 
-@theme inline {
+  /* Define semantic color tokens that map to our variables */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Premium Shadow System */
+  --shadow-premium: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-premium-hover: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+}
+
+:root {
+  --background: #f8fafc;
+  /* Softer slate-50 background */
+  --foreground: #0f172a;
+  /* Slate-900 foreground */
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --muted: #f1f5f9;
+  /* Slate-100 */
+  --muted-foreground: #64748b;
+  /* Slate-500 */
+
+  --border: #e2e8f0;
+  /* Slate-200 */
+
+  --accent: #6366f1;
+  /* Indigo-500 for subtle accents */
+  --accent-foreground: #ffffff;
+}
+
+.dark {
+  --background: #030712;
+  /* gray-950 */
+  --foreground: #f9fafb;
+  /* gray-50 */
+
+  --card: #0c111c;
+  /* darker than background for depth */
+  --card-foreground: #f8fafc;
+
+  --muted: #1e293b;
+  /* slate-800 */
+  --muted-foreground: #94a3b8;
+  /* slate-400 */
+
+  --border: #1e293b;
+  /* slate-800 */
+
+  --accent: #818cf8;
+  /* Indigo-400 */
+  --accent-foreground: #ffffff;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
+  transition-property: background-color, color, border-color;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar for a premium look */
+/* Custom scrollbar optimized for theme switching */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(31, 41, 55, 0.5);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-  border-radius: 4px;
+  background: var(--border);
+  border-radius: 5px;
+  border: 2px solid var(--background);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 114, 128, 0.5);
+  background: var(--muted-foreground);
 }

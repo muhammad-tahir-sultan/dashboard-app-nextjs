@@ -14,28 +14,28 @@ interface CardProps {
 
 const colorMap = {
     blue: {
-        bg: 'from-blue-500/20 to-blue-600/5',
-        border: 'border-blue-500/30',
-        icon: 'text-blue-400',
-        glow: 'shadow-blue-500/10',
+        bg: 'from-blue-500/10 to-blue-600/5 dark:from-blue-500/20 dark:to-blue-600/5',
+        border: 'border-blue-200 dark:border-blue-500/30',
+        icon: 'text-blue-600 dark:text-blue-400',
+        glow: 'shadow-blue-500/5 dark:shadow-blue-500/10',
     },
     emerald: {
-        bg: 'from-emerald-500/20 to-emerald-600/5',
-        border: 'border-emerald-500/30',
-        icon: 'text-emerald-400',
-        glow: 'shadow-emerald-500/10',
+        bg: 'from-emerald-500/10 to-emerald-600/5 dark:from-emerald-500/20 dark:to-emerald-600/5',
+        border: 'border-emerald-200 dark:border-emerald-500/30',
+        icon: 'text-emerald-600 dark:text-emerald-400',
+        glow: 'shadow-emerald-500/5 dark:shadow-emerald-500/10',
     },
     violet: {
-        bg: 'from-violet-500/20 to-violet-600/5',
-        border: 'border-violet-500/30',
-        icon: 'text-violet-400',
-        glow: 'shadow-violet-500/10',
+        bg: 'from-violet-500/10 to-violet-600/5 dark:from-violet-500/20 dark:to-violet-600/5',
+        border: 'border-violet-200 dark:border-violet-500/30',
+        icon: 'text-violet-600 dark:text-violet-400',
+        glow: 'shadow-violet-500/5 dark:shadow-violet-500/10',
     },
     amber: {
-        bg: 'from-amber-500/20 to-amber-600/5',
-        border: 'border-amber-500/30',
-        icon: 'text-amber-400',
-        glow: 'shadow-amber-500/10',
+        bg: 'from-amber-500/10 to-amber-600/5 dark:from-amber-500/20 dark:to-amber-600/5',
+        border: 'border-amber-200 dark:border-amber-500/30',
+        icon: 'text-amber-600 dark:text-amber-400',
+        glow: 'shadow-amber-500/5 dark:shadow-amber-500/10',
     },
 };
 
@@ -48,16 +48,13 @@ const Card = memo(function Card({ title, value, subtitle, icon, trend, color }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className={`
-        relative overflow-hidden rounded-2xl border ${c.border}
-        bg-gradient-to-br ${c.bg}
-        backdrop-blur-xl p-6
-        shadow-lg ${c.glow}
-        hover:scale-[1.02] transition-transform duration-300
-        dark:bg-gray-900/50
+        relative overflow-hidden rounded-2xl border border-border
+        bg-card p-6 shadow-premium
+        hover:shadow-premium-hover hover:scale-[1.01] transition-all duration-500
       `}
         >
-            {/* Decorative glow circle */}
-            <div className={`absolute -top-4 -right-4 w-24 h-24 rounded-full bg-gradient-to-br ${c.bg} opacity-40 blur-2xl`} />
+            {/* Background decorative gradient - very subtle in light mode */}
+            <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-2xl opacity-10 dark:opacity-20 ${c.bg}`} />
 
             <div className="flex items-start justify-between relative z-10">
                 <div>
@@ -67,7 +64,7 @@ const Card = memo(function Card({ title, value, subtitle, icon, trend, color }: 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ type: 'spring', stiffness: 200 }}
-                        className="text-3xl font-bold text-gray-100 tracking-tight"
+                        className="text-3xl font-bold text-foreground tracking-tight"
                     >
                         {value}
                     </motion.p>
@@ -75,7 +72,7 @@ const Card = memo(function Card({ title, value, subtitle, icon, trend, color }: 
                         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
                     )}
                 </div>
-                <div className={`p-3 rounded-xl bg-white/5 ${c.icon}`}>
+                <div className={`p-3 rounded-xl bg-foreground/5 ${c.icon}`}>
                     {icon}
                 </div>
             </div>

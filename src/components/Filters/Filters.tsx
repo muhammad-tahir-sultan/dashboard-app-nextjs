@@ -28,10 +28,10 @@ const Filters = memo(function Filters() {
     }, [dispatch]);
 
     const selectClass =
-        'bg-gray-800/80 border border-gray-700/50 rounded-xl px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors appearance-none cursor-pointer';
+        'bg-card border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all appearance-none cursor-pointer hover:border-indigo-500/30';
 
     const inputClass =
-        'bg-gray-800/80 border border-gray-700/50 rounded-xl px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors w-full';
+        'bg-card border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all w-full hover:border-indigo-500/30';
 
     return (
         <div className="flex flex-wrap items-end gap-3">
@@ -114,7 +114,7 @@ const Filters = memo(function Filters() {
             {/* Reset */}
             <button
                 onClick={handleReset}
-                className="px-4 py-2 rounded-xl bg-gray-800 border border-gray-700/50 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 rounded-xl bg-muted border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 hover:border-muted-foreground/30 transition-all shadow-sm"
             >
                 Reset
             </button>

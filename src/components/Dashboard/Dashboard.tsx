@@ -51,12 +51,21 @@ const ActiveIcon = () => (
 );
 
 export default function Dashboard() {
+    const darkMode = useAppSelector(selectDarkMode);
     const dispatch = useAppDispatch();
     const loading = useAppSelector(selectLoading);
     const error = useAppSelector(selectError);
     const metrics = useAppSelector(selectSummaryMetrics);
     const chartData = useAppSelector(selectChartData);
-    const darkMode = useAppSelector(selectDarkMode);
+
+    // Apply dark mode class to html element
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [darkMode]);
 
     // Bootstrap data
     useEffect(() => {
@@ -71,144 +80,143 @@ export default function Dashboard() {
     }, [dispatch]);
 
     return (
-        <div className={darkMode ? 'dark' : ''}>
-            <div className="min-h-screen bg-gray-950 text-gray-100 transition-colors duration-300">
-                {/* Background gradient decoration */}
-                <div className="fixed inset-0 -z-10">
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
+        <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ease-in-out">
+            {/* Background gradient decoration */}
+            <div className="fixed inset-0 -z-10">
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl opacity-50 dark:opacity-100" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl opacity-50 dark:opacity-100" />
+            </div>
+
+            {/* Header */}
+            <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/80 border-b border-border transition-colors duration-500">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+                    <div>
+                        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
+                            Analytics Dashboard
+                        </h1>
+                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold opacity-80">Real-time business intelligence</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                            </span>
+                            <span className="text-xs text-emerald-400 font-medium">Live</span>
+                        </div>
+                        <DarkModeToggle />
+                    </div>
+                </div>
+            </header>
+
+            <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                {/* ── Summary Cards ──────────────────────────── */}
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
+                    </div>
+                ) : error ? (
+                    <ErrorFallback message={error} onRetry={handleRetry} />
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card
+                            title="Total Users"
+                            value={formatNumber(metrics.totalUsers)}
+                            subtitle="From filtered results"
+                            icon={<UsersIcon />}
+                            color="blue"
+                            trend={{ value: 12.5, isUp: true }}
+                        />
+                        <Card
+                            title="Active Sessions"
+                            value={formatNumber(metrics.activeSessions)}
+                            subtitle="Updates every 5s"
+                            icon={<ActivityIcon />}
+                            color="emerald"
+                            trend={{ value: 8.3, isUp: true }}
+                        />
+                        <Card
+                            title="Total Revenue"
+                            value={formatCurrency(metrics.totalRevenue)}
+                            subtitle="Across all categories"
+                            icon={<RevenueIcon />}
+                            color="violet"
+                            trend={{ value: 23.1, isUp: true }}
+                        />
+                        <Card
+                            title="Active Users"
+                            value={formatNumber(metrics.activeUsers)}
+                            subtitle="Currently active status"
+                            icon={<ActiveIcon />}
+                            color="amber"
+                            trend={{ value: 4.2, isUp: false }}
+                        />
+                    </div>
+                )}
+
+                {/* ── Filters ────────────────────────────────── */}
+                <div className="rounded-2xl border border-border bg-card shadow-premium p-4 transition-all duration-500 hover:shadow-premium-hover">
+                    <Filters />
                 </div>
 
-                {/* Header */}
-                <header className="sticky top-0 z-30 backdrop-blur-xl bg-gray-950/80 border-b border-gray-800/50">
-                    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                        <div>
-                            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
-                                Analytics Dashboard
-                            </h1>
-                            <p className="text-xs text-gray-500 mt-0.5">Real-time business intelligence</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                                </span>
-                                <span className="text-xs text-emerald-400 font-medium">Live</span>
-                            </div>
-                            <DarkModeToggle />
-                        </div>
-                    </div>
-                </header>
-
-                <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-                    {/* ── Summary Cards ──────────────────────────── */}
-                    {loading ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
-                        </div>
-                    ) : error ? (
-                        <ErrorFallback message={error} onRetry={handleRetry} />
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <Card
-                                title="Total Users"
-                                value={formatNumber(metrics.totalUsers)}
-                                subtitle="From filtered results"
-                                icon={<UsersIcon />}
-                                color="blue"
-                                trend={{ value: 12.5, isUp: true }}
-                            />
-                            <Card
-                                title="Active Sessions"
-                                value={formatNumber(metrics.activeSessions)}
-                                subtitle="Updates every 5s"
-                                icon={<ActivityIcon />}
-                                color="emerald"
-                                trend={{ value: 8.3, isUp: true }}
-                            />
-                            <Card
-                                title="Total Revenue"
-                                value={formatCurrency(metrics.totalRevenue)}
-                                subtitle="Across all categories"
-                                icon={<RevenueIcon />}
-                                color="violet"
-                                trend={{ value: 23.1, isUp: true }}
-                            />
-                            <Card
-                                title="Active Users"
-                                value={formatNumber(metrics.activeUsers)}
-                                subtitle="Currently active status"
-                                icon={<ActiveIcon />}
-                                color="amber"
-                                trend={{ value: 4.2, isUp: false }}
-                            />
-                        </div>
-                    )}
-
-                    {/* ── Filters ────────────────────────────────── */}
-                    <div className="rounded-2xl border border-gray-800/40 bg-gray-900/30 backdrop-blur-xl p-4">
-                        <Filters />
-                    </div>
-
-                    {/* ── Charts ─────────────────────────────────── */}
-                    {error ? (
-                        <ErrorFallback message="Charts unavailable" onRetry={handleRetry} />
-                    ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            <Suspense fallback={<ChartSkeleton />}>
-                                <div className="rounded-2xl border border-gray-800/40 bg-gray-900/30 backdrop-blur-xl p-6">
-                                    <h2 className="text-sm font-semibold text-gray-400 mb-4">Users & Sessions Overview</h2>
-                                    {loading ? <ChartSkeleton /> : <BarChart data={chartData} />}
-                                </div>
-                            </Suspense>
-                            <Suspense fallback={<ChartSkeleton />}>
-                                <div className="rounded-2xl border border-gray-800/40 bg-gray-900/30 backdrop-blur-xl p-6">
-                                    <h2 className="text-sm font-semibold text-gray-400 mb-4">Revenue Trend</h2>
-                                    {loading ? <ChartSkeleton /> : <LineChart data={chartData} />}
-                                </div>
-                            </Suspense>
-                        </div>
-                    )}
-
-                    {/* ── Pie Chart (full width) ─────────────────── */}
-                    {!error && (
+                {/* ── Charts ─────────────────────────────────── */}
+                {error ? (
+                    <ErrorFallback message="Charts unavailable" onRetry={handleRetry} />
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <Suspense fallback={<ChartSkeleton />}>
-                            <div className="rounded-2xl border border-gray-800/40 bg-gray-900/30 backdrop-blur-xl p-6">
-                                <h2 className="text-sm font-semibold text-gray-400 mb-4">User Distribution by Category</h2>
-                                {loading ? <ChartSkeleton /> : <PieChart />}
+                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
+                                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">Users & Sessions Overview</h2>
+                                {loading ? <ChartSkeleton /> : <BarChart data={chartData} />}
                             </div>
                         </Suspense>
-                    )}
-
-                    {/* ── Data Table ─────────────────────────────── */}
-                    <div>
-                        <h2 className="text-sm font-semibold text-gray-400 mb-3">Records</h2>
-                        <Suspense fallback={<TableSkeleton />}>
-                            {loading ? <TableSkeleton /> : error ? (
-                                <ErrorFallback message="Table unavailable" onRetry={handleRetry} />
-                            ) : (
-                                <div className="overflow-x-auto">
-                                    <div className="min-w-[800px]">
-                                        <DataTable />
-                                    </div>
-                                </div>
-                            )}
+                        <Suspense fallback={<ChartSkeleton />}>
+                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
+                                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">Revenue Trend</h2>
+                                {loading ? <ChartSkeleton /> : <LineChart data={chartData} />}
+                            </div>
                         </Suspense>
                     </div>
-                </main>
+                )}
 
-                {/* ── Detail Modal ─────────────────────────────── */}
-                <DetailModal />
+                {/* ── Pie Chart (full width) ─────────────────── */}
+                {!error && (
+                    <Suspense fallback={<ChartSkeleton />}>
+                        <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
+                            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">User Distribution by Category</h2>
+                            {loading ? <ChartSkeleton /> : <PieChart />}
+                        </div>
+                    </Suspense>
+                )}
 
-                {/* Footer */}
-                <footer className="border-t border-gray-800/40 mt-8">
-                    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-600">
-                        <p>© 2026 Analytics Dashboard. Built with Next.js, Redux Toolkit & Recharts.</p>
-                        <p className="mt-1 sm:mt-0">Real-time data simulation active</p>
-                    </div>
-                </footer>
-            </div>
+                {/* ── Data Table ─────────────────────────────── */}
+                <div>
+                    <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Records</h2>
+                    <Suspense fallback={<TableSkeleton />}>
+                        {loading ? <TableSkeleton /> : error ? (
+                            <ErrorFallback message="Table unavailable" onRetry={handleRetry} />
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <div className="min-w-[800px]">
+                                    <DataTable />
+                                </div>
+                            </div>
+                        )}
+                    </Suspense>
+                </div>
+            </main>
+
+            {/* ── Detail Modal ─────────────────────────────── */}
+            <DetailModal />
+
+            {/* Footer */}
+            <footer className="border-t border-border mt-8 transition-colors duration-500">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground">
+                    <p>© 2026 Analytics Dashboard. Built with Next.js, Redux Toolkit & Recharts.</p>
+                    <p className="mt-1 sm:mt-0">Real-time data simulation active</p>
+                </div>
+            </footer>
         </div>
     );
 }
+
