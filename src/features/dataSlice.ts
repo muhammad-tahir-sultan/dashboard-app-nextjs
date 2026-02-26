@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { mockFetchData, type DataRecord, type ChartDataPoint } from '@/utils/mockApi';
+import { mockFetchData } from '@/utils/mockApi';
+import { DataRecord, ChartDataPoint } from '@/types';
 import type { RootState } from '@/store/store';
 
 // ── Async thunk ──────────────────────────────────────────────────────
@@ -63,7 +64,7 @@ export const { incrementActiveSessions, addRealtimeRecord } = dataSlice.actions;
 export default dataSlice.reducer;
 
 // ── Memoized Selectors (reselect) ────────────────────────────────────
-const selectRecords = (state: RootState) => state.data?.records || [];
+const selectRecords = (state: RootState): DataRecord[] => state.data?.records || [];
 const selectFilters = (state: RootState) => state.ui?.filters || {
     category: '',
     status: '',
@@ -74,27 +75,27 @@ const selectFilters = (state: RootState) => state.ui?.filters || {
 
 export const selectFilteredRecords = createSelector(
     [selectRecords, selectFilters],
-    (records, filters) => {
+    (records: DataRecord[], filters) => {
         let filtered = records;
 
         if (!filters) return filtered;
 
         if (filters.category) {
-            filtered = filtered.filter((r) => r.category === filters.category);
+            filtered = filtered.filter((r: DataRecord) => r.category === filters.category);
         }
         if (filters.status) {
-            filtered = filtered.filter((r) => r.status === filters.status);
+            filtered = filtered.filter((r: DataRecord) => r.status === filters.status);
         }
         if (filters.dateFrom) {
-            filtered = filtered.filter((r) => r.date >= filters.dateFrom);
+            filtered = filtered.filter((r: DataRecord) => r.date >= filters.dateFrom);
         }
         if (filters.dateTo) {
-            filtered = filtered.filter((r) => r.date <= filters.dateTo);
+            filtered = filtered.filter((r: DataRecord) => r.date <= filters.dateTo);
         }
         if (filters.search) {
             const q = filters.search.toLowerCase();
             filtered = filtered.filter(
-                (r) =>
+                (r: DataRecord) =>
                     r.name.toLowerCase().includes(q) ||
                     r.email.toLowerCase().includes(q) ||
                     r.id.toLowerCase().includes(q)
@@ -107,10 +108,10 @@ export const selectFilteredRecords = createSelector(
 
 export const selectSummaryMetrics = createSelector(
     [selectFilteredRecords, (state: RootState) => state.data?.activeSessions || 0],
-    (records, activeSessions) => {
+    (records: DataRecord[], activeSessions: number) => {
         const totalUsers = records?.length || 0;
-        const totalRevenue = records?.reduce((sum, r) => sum + r.revenue, 0) || 0;
-        const activeUsers = records?.filter((r) => r.status === 'Active').length || 0;
+        const totalRevenue = records?.reduce((sum: number, r: DataRecord) => sum + r.revenue, 0) || 0;
+        const activeUsers = records?.filter((r: DataRecord) => r.status === 'Active').length || 0;
         return { totalUsers, totalRevenue, activeUsers, activeSessions };
     }
 );

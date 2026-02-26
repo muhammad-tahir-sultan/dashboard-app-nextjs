@@ -1,30 +1,5 @@
-export interface DataRecord {
-    id: string;
-    name: string;
-    email: string;
-    category: 'Enterprise' | 'SMB' | 'Startup' | 'Individual';
-    status: 'Active' | 'Inactive' | 'Pending' | 'Churned';
-    revenue: number;
-    sessions: number;
-    date: string; // ISO date string
-    country: string;
-    plan: 'Free' | 'Basic' | 'Pro' | 'Enterprise';
-}
-
-export interface ChartDataPoint {
-    month: string;
-    users: number;
-    revenue: number;
-    sessions: number;
-}
-
-export interface Filters {
-    category: string;
-    status: string;
-    dateFrom: string;
-    dateTo: string;
-    search: string;
-}
+import { DataRecord, ChartDataPoint } from '@/types';
+import { CATEGORIES, STATUSES, PLANS, MONTHS } from '@/constants';
 
 const firstNames = [
     'James', 'Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Sophia', 'Mason',
@@ -53,9 +28,6 @@ const countries = [
     'Sweden', 'Singapore', 'South Korea', 'Spain', 'Italy',
 ];
 
-const categories: DataRecord['category'][] = ['Enterprise', 'SMB', 'Startup', 'Individual'];
-const statuses: DataRecord['status'][] = ['Active', 'Inactive', 'Pending', 'Churned'];
-const plans: DataRecord['plan'][] = ['Free', 'Basic', 'Pro', 'Enterprise'];
 
 function randomItem<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -71,13 +43,13 @@ export function generateMockRecords(count: number = 200): DataRecord[] {
     for (let i = 0; i < count; i++) {
         const firstName = randomItem(firstNames);
         const lastName = randomItem(lastNames);
-        const category = randomItem(categories);
+        const category = randomItem(CATEGORIES as unknown as string[]);
         records.push({
             id: `REC-${String(i + 1).padStart(4, '0')}`,
             name: `${firstName} ${lastName}`,
             email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
-            category,
-            status: randomItem(statuses),
+            category: category as DataRecord['category'],
+            status: randomItem(STATUSES as unknown as string[]) as DataRecord['status'],
             revenue: category === 'Enterprise'
                 ? Math.round(Math.random() * 50000 + 10000)
                 : category === 'SMB'
@@ -88,18 +60,14 @@ export function generateMockRecords(count: number = 200): DataRecord[] {
             sessions: Math.floor(Math.random() * 500 + 1),
             date: randomDate(new Date('2025-01-01'), new Date('2026-02-26')),
             country: randomItem(countries),
-            plan: randomItem(plans),
+            plan: randomItem(PLANS as unknown as string[]) as DataRecord['plan'],
         });
     }
     return records;
 }
 
 export function generateChartData(): ChartDataPoint[] {
-    const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    return months.map((month) => ({
+    return MONTHS.map((month) => ({
         month,
         users: Math.floor(Math.random() * 5000 + 1000),
         revenue: Math.round(Math.random() * 100000 + 20000),

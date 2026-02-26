@@ -14,28 +14,32 @@ interface CardProps {
 
 const colorMap = {
     blue: {
-        bg: 'from-blue-500/10 to-blue-600/5 dark:from-blue-500/20 dark:to-blue-600/5',
-        border: 'border-blue-200 dark:border-blue-500/30',
+        bg: 'from-blue-500/30 to-blue-600/5 dark:from-blue-500/40 dark:to-transparent',
+        border: 'border-blue-500/30 dark:border-blue-500/50',
         icon: 'text-blue-600 dark:text-blue-400',
-        glow: 'shadow-blue-500/5 dark:shadow-blue-500/10',
+        iconBg: 'bg-blue-500/15 dark:bg-blue-500/30',
+        glow: 'shadow-[0_0_25px_rgba(59,130,246,0.12)] dark:shadow-[0_0_40px_rgba(59,130,246,0.2)]',
     },
     emerald: {
-        bg: 'from-emerald-500/10 to-emerald-600/5 dark:from-emerald-500/20 dark:to-emerald-600/5',
-        border: 'border-emerald-200 dark:border-emerald-500/30',
+        bg: 'from-emerald-500/30 to-emerald-600/5 dark:from-emerald-500/40 dark:to-transparent',
+        border: 'border-emerald-500/30 dark:border-emerald-500/50',
         icon: 'text-emerald-600 dark:text-emerald-400',
-        glow: 'shadow-emerald-500/5 dark:shadow-emerald-500/10',
+        iconBg: 'bg-emerald-500/15 dark:bg-emerald-500/30',
+        glow: 'shadow-[0_0_25px_rgba(16,185,129,0.12)] dark:shadow-[0_0_40px_rgba(16,185,129,0.2)]',
     },
     violet: {
-        bg: 'from-violet-500/10 to-violet-600/5 dark:from-violet-500/20 dark:to-violet-600/5',
-        border: 'border-violet-200 dark:border-violet-500/30',
+        bg: 'from-violet-500/30 to-violet-600/5 dark:from-violet-500/40 dark:to-transparent',
+        border: 'border-violet-500/30 dark:border-violet-500/50',
         icon: 'text-violet-600 dark:text-violet-400',
-        glow: 'shadow-violet-500/5 dark:shadow-violet-500/10',
+        iconBg: 'bg-violet-500/15 dark:bg-violet-500/30',
+        glow: 'shadow-[0_0_25px_rgba(139,92,246,0.12)] dark:shadow-[0_0_40px_rgba(139,92,246,0.2)]',
     },
     amber: {
-        bg: 'from-amber-500/10 to-amber-600/5 dark:from-amber-500/20 dark:to-amber-600/5',
-        border: 'border-amber-200 dark:border-amber-500/30',
+        bg: 'from-amber-500/30 to-amber-600/5 dark:from-amber-500/40 dark:to-transparent',
+        border: 'border-amber-500/30 dark:border-amber-500/50',
         icon: 'text-amber-600 dark:text-amber-400',
-        glow: 'shadow-amber-500/5 dark:shadow-amber-500/10',
+        iconBg: 'bg-amber-500/15 dark:bg-amber-500/30',
+        glow: 'shadow-[0_0_25px_rgba(245,158,11,0.12)] dark:shadow-[0_0_40px_rgba(245,158,11,0.2)]',
     },
 };
 
@@ -48,13 +52,15 @@ const Card = memo(function Card({ title, value, subtitle, icon, trend, color }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className={`
-        relative overflow-hidden rounded-2xl border border-border
-        bg-card p-6 shadow-premium
-        hover:shadow-premium-hover hover:scale-[1.01] transition-all duration-500
+        relative overflow-hidden rounded-2xl border p-6 
+        bg-card/60 dark:bg-card/40 backdrop-blur-xl
+        ${c.border} ${c.glow}
+        hover:scale-[1.01] transition-all duration-500 cursor-default
       `}
         >
-            {/* Background decorative gradient - very subtle in light mode */}
-            <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-2xl opacity-10 dark:opacity-20 ${c.bg}`} />
+            {/* Background decorative gradient */}
+            <div className={`absolute inset-0 bg-gradient-to-br opacity-[0.1] dark:opacity-[0.2] pointer-events-none ${c.bg}`} />
+            <div className={`absolute -right-12 -top-12 w-48 h-48 rounded-full blur-3xl opacity-30 dark:opacity-40 ${c.bg}`} />
 
             <div className="flex items-start justify-between relative z-10">
                 <div>
@@ -72,7 +78,7 @@ const Card = memo(function Card({ title, value, subtitle, icon, trend, color }: 
                         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
                     )}
                 </div>
-                <div className={`p-3 rounded-xl bg-foreground/5 ${c.icon}`}>
+                <div className={`p-3 rounded-xl ${c.iconBg} ${c.icon}`}>
                     {icon}
                 </div>
             </div>

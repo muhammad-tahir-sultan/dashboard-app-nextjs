@@ -1,5 +1,3 @@
-'use client';
-
 import React, { memo, useMemo, useCallback } from 'react';
 import { List } from 'react-window';
 const ListAny = List as any;
@@ -7,25 +5,22 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { selectFilteredRecords } from '@/features/dataSlice';
 import { setSort, setPage, openModal } from '@/features/uiSlice';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import type { DataRecord } from '@/utils/mockApi';
+import { DataRecord } from '@/types';
+import { STATUS_COLORS } from '@/constants';
+import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
 
 const columns: { key: keyof DataRecord | string; label: string; width: string }[] = [
     { key: 'id', label: 'ID', width: 'w-24' },
-    { key: 'name', label: 'Name', width: 'w-40' },
+    { key: 'name', label: 'Customer', width: 'w-40' },
     { key: 'email', label: 'Email', width: 'w-48' },
     { key: 'category', label: 'Category', width: 'w-28' },
-    { key: 'status', label: 'Status', width: 'w-24' },
+    { key: 'status', label: 'Status', width: 'w-28' },
     { key: 'revenue', label: 'Revenue', width: 'w-28' },
     { key: 'date', label: 'Date', width: 'w-28' },
     { key: 'country', label: 'Country', width: 'w-32' },
 ];
 
-const statusColors: Record<string, string> = {
-    Active: 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30',
-    Inactive: 'bg-gray-500/10 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-500/30',
-    Pending: 'bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/30',
-    Churned: 'bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/30',
-};
 
 const DataTable = memo(function DataTable() {
     const dispatch = useAppDispatch();
@@ -94,12 +89,10 @@ const DataTable = memo(function DataTable() {
                     <div className="w-40 px-4 py-3 text-foreground font-medium truncate">{record.name}</div>
                     <div className="w-48 px-4 py-3 text-muted-foreground truncate">{record.email}</div>
                     <div className="w-28 px-4 py-3">
-                        <span className="px-2 py-0.5 rounded-md text-xs bg-violet-500/10 text-violet-600 dark:text-violet-300 border border-violet-200 dark:border-violet-500/20">
-                            {record.category}
-                        </span>
+                        <Badge variant="info">{record.category}</Badge>
                     </div>
-                    <div className="w-24 px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-md text-xs border ${statusColors[record.status]}`}>
+                    <div className="w-28 px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${STATUS_COLORS[record.status as keyof typeof STATUS_COLORS]}`}>
                             {record.status}
                         </span>
                     </div>
@@ -120,7 +113,7 @@ const DataTable = memo(function DataTable() {
                     <button
                         key={col.key}
                         onClick={() => handleSort(col.key)}
-                        className={`${col.width} px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors`}
+                        className={`${col.width} px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all outline-none`}
                     >
                         {col.label} <span className="ml-1 opacity-50">{getSortIcon(col.key)}</span>
                     </button>
@@ -144,41 +137,45 @@ const DataTable = memo(function DataTable() {
 
             {/* Pagination */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30 transition-colors duration-500">
-                <p className="text-xs text-gray-500">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
                     Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, sortedRecords.length)} of{' '}
                     {sortedRecords.length} records
                 </p>
-                <div className="flex items-center gap-1">
-                    <button
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="secondary"
+                        size="sm"
                         disabled={page <= 1}
                         onClick={() => dispatch(setPage(page - 1))}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-background border border-border text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                     >
                         ‹ Prev
-                    </button>
-                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                        const p = i + 1;
-                        return (
-                            <button
-                                key={p}
-                                onClick={() => dispatch(setPage(p))}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${p === page
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                                    : 'bg-background border border-border text-muted-foreground hover:bg-muted'
-                                    }`}
-                            >
-                                {p}
-                            </button>
-                        );
-                    })}
-                    {totalPages > 5 && <span className="text-gray-600 text-xs">...</span>}
-                    <button
+                    </Button>
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                            const p = i + 1;
+                            return (
+                                <button
+                                    key={p}
+                                    onClick={() => dispatch(setPage(p))}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-[10px] font-bold transition-all ${p === page
+                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                                        : 'bg-background border border-border text-muted-foreground hover:bg-muted'
+                                        }`}
+                                >
+                                    {p}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    {totalPages > 5 && <span className="text-muted-foreground text-xs font-bold px-1">...</span>}
+                    <Button
+                        variant="secondary"
+                        size="sm"
                         disabled={page >= totalPages}
                         onClick={() => dispatch(setPage(page + 1))}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-background border border-border text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                     >
                         Next ›
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, Suspense, lazy, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -11,44 +9,18 @@ import {
 } from '@/features/dataSlice';
 import { selectDarkMode } from '@/features/themeSlice';
 import { useRealtimeUpdates } from '@/hooks/useRealtimeUpdates';
-import Card from '@/components/Card/Card';
+import SummaryGrid from './SummaryGrid';
 import Filters from '@/components/Filters/Filters';
 import DarkModeToggle from '@/components/Layout/DarkModeToggle';
 import DetailModal from '@/components/Modal/DetailModal';
 import ErrorFallback from '@/components/ErrorFallback/ErrorFallback';
-import { CardSkeleton, ChartSkeleton, TableSkeleton } from '@/components/Skeleton/Skeleton';
-import { formatCurrency, formatNumber } from '@/utils/formatters';
+import { ChartSkeleton, TableSkeleton } from '@/components/Skeleton/Skeleton';
 
 // ── Lazy-loaded heavy components ─────────────────────────────────────
 const BarChart = lazy(() => import('@/components/Charts/BarChart'));
 const LineChart = lazy(() => import('@/components/Charts/LineChart'));
 const PieChart = lazy(() => import('@/components/Charts/PieChart'));
 const DataTable = lazy(() => import('@/components/Table/DataTable'));
-
-// ── Icons (inline SVGs) ─────────────────────────────────────────────
-const UsersIcon = () => (
-    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-    </svg>
-);
-
-const ActivityIcon = () => (
-    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-    </svg>
-);
-
-const RevenueIcon = () => (
-    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-);
-
-const ActiveIcon = () => (
-    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-);
 
 export default function Dashboard() {
     const darkMode = useAppSelector(selectDarkMode);
@@ -60,11 +32,9 @@ export default function Dashboard() {
 
     // Apply dark mode class to html element
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        const root = document.documentElement;
+        if (darkMode) root.classList.add('dark');
+        else root.classList.remove('dark');
     }, [darkMode]);
 
     // Bootstrap data
@@ -80,29 +50,31 @@ export default function Dashboard() {
     }, [dispatch]);
 
     return (
-        <div className="min-h-screen bg-background text-foreground transition-colors duration-500 ease-in-out">
-            {/* Background gradient decoration */}
-            <div className="fixed inset-0 -z-10">
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl opacity-50 dark:opacity-100" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl opacity-50 dark:opacity-100" />
+        <div className="min-h-screen bg-background text-foreground transition-all duration-500 ease-in-out font-sans">
+            {/* Background decoration */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-10%] left-[10%] w-[500px] h-[500px] bg-indigo-600/10 dark:bg-indigo-600/20 rounded-full blur-[120px] opacity-50 dark:opacity-100" />
+                <div className="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-violet-600/10 dark:bg-violet-600/20 rounded-full blur-[120px] opacity-50 dark:opacity-100" />
             </div>
 
             {/* Header */}
-            <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/80 border-b border-border transition-colors duration-500">
+            <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/80 border-b border-border transition-all duration-500">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
                             Analytics Dashboard
                         </h1>
-                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold opacity-80">Real-time business intelligence</p>
+                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold opacity-80 decoration-indigo-500/30">
+                            Real-time business intelligence
+                        </p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                            <span className="relative flex h-2 w-2">
+                            <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                             </span>
-                            <span className="text-xs text-emerald-400 font-medium">Live</span>
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 dark:text-emerald-400">Live</span>
                         </div>
                         <DarkModeToggle />
                     </div>
@@ -110,93 +82,55 @@ export default function Dashboard() {
             </header>
 
             <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-                {/* ── Summary Cards ──────────────────────────── */}
-                {loading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
-                    </div>
-                ) : error ? (
-                    <ErrorFallback message={error} onRetry={handleRetry} />
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card
-                            title="Total Users"
-                            value={formatNumber(metrics.totalUsers)}
-                            subtitle="From filtered results"
-                            icon={<UsersIcon />}
-                            color="blue"
-                            trend={{ value: 12.5, isUp: true }}
-                        />
-                        <Card
-                            title="Active Sessions"
-                            value={formatNumber(metrics.activeSessions)}
-                            subtitle="Updates every 5s"
-                            icon={<ActivityIcon />}
-                            color="emerald"
-                            trend={{ value: 8.3, isUp: true }}
-                        />
-                        <Card
-                            title="Total Revenue"
-                            value={formatCurrency(metrics.totalRevenue)}
-                            subtitle="Across all categories"
-                            icon={<RevenueIcon />}
-                            color="violet"
-                            trend={{ value: 23.1, isUp: true }}
-                        />
-                        <Card
-                            title="Active Users"
-                            value={formatNumber(metrics.activeUsers)}
-                            subtitle="Currently active status"
-                            icon={<ActiveIcon />}
-                            color="amber"
-                            trend={{ value: 4.2, isUp: false }}
-                        />
-                    </div>
-                )}
+                {/* ── Metrics ────────────────────────────────── */}
+                <SummaryGrid
+                    metrics={metrics}
+                    loading={loading}
+                    error={error}
+                    onRetry={handleRetry}
+                />
 
                 {/* ── Filters ────────────────────────────────── */}
                 <div className="rounded-2xl border border-border bg-card shadow-premium p-4 transition-all duration-500 hover:shadow-premium-hover">
                     <Filters />
                 </div>
 
-                {/* ── Charts ─────────────────────────────────── */}
-                {error ? (
-                    <ErrorFallback message="Charts unavailable" onRetry={handleRetry} />
-                ) : (
+                {/* ── Charts Grid ────────────────────────────── */}
+                {!error && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <Suspense fallback={<ChartSkeleton />}>
-                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
-                                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">Users & Sessions Overview</h2>
+                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover">
+                                <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-6">Users & Sessions Overview</h2>
                                 {loading ? <ChartSkeleton /> : <BarChart data={chartData} />}
                             </div>
                         </Suspense>
                         <Suspense fallback={<ChartSkeleton />}>
-                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
-                                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">Revenue Trend</h2>
+                            <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover">
+                                <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-6">Revenue Trend</h2>
                                 {loading ? <ChartSkeleton /> : <LineChart data={chartData} />}
                             </div>
                         </Suspense>
                     </div>
                 )}
 
-                {/* ── Pie Chart (full width) ─────────────────── */}
+                {/* ── Pie Chart ──────────────────────────────── */}
                 {!error && (
                     <Suspense fallback={<ChartSkeleton />}>
-                        <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover font-sans">
-                            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-6">User Distribution by Category</h2>
+                        <div className="rounded-2xl border border-border bg-card shadow-premium p-6 transition-all duration-500 hover:shadow-premium-hover">
+                            <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-6">User Distribution by Category</h2>
                             {loading ? <ChartSkeleton /> : <PieChart />}
                         </div>
                     </Suspense>
                 )}
 
                 {/* ── Data Table ─────────────────────────────── */}
-                <div>
-                    <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Records</h2>
+                <div className="space-y-4">
+                    <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">Detailed Records</h2>
                     <Suspense fallback={<TableSkeleton />}>
                         {loading ? <TableSkeleton /> : error ? (
                             <ErrorFallback message="Table unavailable" onRetry={handleRetry} />
                         ) : (
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto pb-4">
                                 <div className="min-w-[800px]">
                                     <DataTable />
                                 </div>
@@ -210,13 +144,20 @@ export default function Dashboard() {
             <DetailModal />
 
             {/* Footer */}
-            <footer className="border-t border-border mt-8 transition-colors duration-500">
-                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground">
-                    <p>© 2026 Analytics Dashboard. Built with Next.js, Redux Toolkit & Recharts.</p>
-                    <p className="mt-1 sm:mt-0">Real-time data simulation active</p>
+            <footer className="border-t border-border mt-12 transition-all duration-500 bg-muted/20">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <p>© 2026 Analytics Dashboard • Premium Intelligence Suite</p>
+                    <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            System Operational
+                        </span>
+                        <p>v1.0.4-stable</p>
+                    </div>
                 </div>
             </footer>
         </div>
     );
 }
+
 

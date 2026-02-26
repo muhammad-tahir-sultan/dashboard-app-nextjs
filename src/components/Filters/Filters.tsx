@@ -4,6 +4,10 @@ import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setFilter, resetFilters } from '@/features/uiSlice';
 import { useDebounce } from '@/hooks/useDebounce';
+import { CATEGORIES, STATUSES } from '@/constants';
+import Input from '@/components/ui/Input';
+import Select from '@/components/ui/Select';
+import Button from '@/components/ui/Button';
 
 const Filters = memo(function Filters() {
     const dispatch = useAppDispatch();
@@ -27,97 +31,81 @@ const Filters = memo(function Filters() {
         setSearchInput('');
     }, [dispatch]);
 
-    const selectClass =
-        'bg-card border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all appearance-none cursor-pointer hover:border-indigo-500/30';
+    const categoryOptions = [
+        { label: 'All Categories', value: '' },
+        ...CATEGORIES.map(c => ({ label: c, value: c }))
+    ];
 
-    const inputClass =
-        'bg-card border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all w-full hover:border-indigo-500/30';
+    const statusOptions = [
+        { label: 'All Statuses', value: '' },
+        ...STATUSES.map(s => ({ label: s, value: s }))
+    ];
 
     return (
         <div className="flex flex-wrap items-end gap-3">
             {/* Search */}
             <div className="flex-1 min-w-[200px]">
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Search</label>
-                <div className="relative">
-                    <svg
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input
-                        type="text"
-                        placeholder="Search by name, email, or ID…"
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        className={`${inputClass} pl-9`}
-                    />
-                </div>
+                <Input
+                    label="Search"
+                    placeholder="Search by name, email, or ID…"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    icon={
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    }
+                />
             </div>
 
             {/* Category */}
-            <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Category</label>
-                <select
+            <div className="w-full sm:w-auto min-w-[160px]">
+                <Select
+                    label="Category"
                     value={filters.category}
                     onChange={(e) => handleChange('category', e.target.value)}
-                    className={selectClass}
-                >
-                    <option value="">All Categories</option>
-                    <option value="Enterprise">Enterprise</option>
-                    <option value="SMB">SMB</option>
-                    <option value="Startup">Startup</option>
-                    <option value="Individual">Individual</option>
-                </select>
+                    options={categoryOptions}
+                />
             </div>
 
             {/* Status */}
-            <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Status</label>
-                <select
+            <div className="w-full sm:w-auto min-w-[160px]">
+                <Select
+                    label="Status"
                     value={filters.status}
                     onChange={(e) => handleChange('status', e.target.value)}
-                    className={selectClass}
-                >
-                    <option value="">All Statuses</option>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Churned">Churned</option>
-                </select>
+                    options={statusOptions}
+                />
             </div>
 
             {/* Date From */}
-            <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">From</label>
-                <input
+            <div className="w-full sm:w-auto min-w-[150px]">
+                <Input
+                    label="From"
                     type="date"
                     value={filters.dateFrom}
                     onChange={(e) => handleChange('dateFrom', e.target.value)}
-                    className={inputClass}
                 />
             </div>
 
             {/* Date To */}
-            <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">To</label>
-                <input
+            <div className="w-full sm:w-auto min-w-[150px]">
+                <Input
+                    label="To"
                     type="date"
                     value={filters.dateTo}
                     onChange={(e) => handleChange('dateTo', e.target.value)}
-                    className={inputClass}
                 />
             </div>
 
             {/* Reset */}
-            <button
+            <Button
+                variant="secondary"
                 onClick={handleReset}
-                className="px-4 py-2 rounded-xl bg-muted border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 hover:border-muted-foreground/30 transition-all shadow-sm"
+                className="h-[38px] px-6" // Match input height roughly
             >
                 Reset
-            </button>
+            </Button>
         </div>
     );
 });
